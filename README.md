@@ -1,3 +1,3 @@
 # grundlegend-emacs
 
-Basic, foundational emacs. Customizing emacs from a vanilla configuration.
+Fundamental emacs. Customizing emacs from a vanilla configuration.
