@@ -8,15 +8,17 @@
 
 ; (menu-bar-mode -1)         ; Disable the menubar
 
+;;windows fonts
 ;; Set the fixed pitch face: for windows: "Consolas" :height 170 
 (set-face-attribute 'default nil :font "Consolas" :height 170)
 (set-face-attribute 'fixed-pitch nil :font "Consolas" :height 170)
-
 ;; Set the variable pitch face: for windows: "Calibri" :height 170 
 (set-face-attribute 'variable-pitch nil :font "Calibri" :height 170 :weight 'regular)
 
-
-
+;; manjaro linux fonts
+;;(set-face-attribute 'default nil :font "Noto Mono" :height 140)
+;;(set-face-attribute 'fixed-pitch nil :font "Noto Mono" :height 140)
+;;(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 140 :weight 'regular)
 
 ;; set up the visible bell
 (setq visible-bell t)
