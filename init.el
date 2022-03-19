@@ -8,17 +8,17 @@
 
 ; (menu-bar-mode -1)         ; Disable the menubar
 
+;; Set the fixed pitch face: for windows: "Consolas" :height 170 
 (set-face-attribute 'default nil :font "Consolas" :height 170)
-;; set up the visible bell
-;; Set the fixed pitch face
 (set-face-attribute 'fixed-pitch nil :font "Consolas" :height 170)
 
-;; Set the variable pitch face
+;; Set the variable pitch face: for windows: "Calibri" :height 170 
 (set-face-attribute 'variable-pitch nil :font "Calibri" :height 170 :weight 'regular)
 
 
 
 
+;; set up the visible bell
 (setq visible-bell t)
 
 ;; Make ESC quit prompts
@@ -124,7 +124,7 @@
     "t"  '(:ignore t :which-key "toggles")
     "tt" '(counsel-load-theme :which-key "choose theme")
     "b"  '(:ignore t :which-key "buffer")
-    "be" '(eval-buffer :which-key "eval buffer")
+    "be" '(eval-buffer :which-key "eval buffer") 
     "bN" '(evil-buffer-new :which-key "new buffer")
     "bn" '(evil-next-buffer :which-key "next buffer")
     "bp" '(evil-prev-buffer :which-key "prev buffer")
@@ -135,6 +135,10 @@
     "fs" '(save-buffer :which-key "save buffer")
     "fn" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/Notes/")) :which-key "notes")
     "fc" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/AppData/Roaming/.emacs.d/init.el")) :which-key "init.el")
+    "w"  '(:ignore t :which-key "window")
+    "wv" '(evil-window-vsplit :which-key "vertical split window")
+    "wc" '(evil-window-delete :which-key "close window")
+    "wn" '(evil-window-new :which-key "new window")
   ) )
 
 ;quit keys, killprompt quit emacs, etc
@@ -202,6 +206,19 @@
   :config
   (setq org-ellipsis " ▾"
 	org-hide-emphasis-markers t)
+
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+
+  (setq org-agenda-files
+	'("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
+  (setq org-refile-targets
+	'(("archive.org" :maxlevel . 2)
+	  ("tasks.org" :maxlevel . 2)))
+  ;;save org buffers after refiling
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
   (jkg/org-font-setup))
 
 (use-package org-bullets
@@ -218,7 +235,10 @@
 (use-package visual-fill-column
   :hook (org-mode . jkg/org-mode-visual-fill))
 
-
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python . t)))
 
 
 
