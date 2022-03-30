@@ -1,5 +1,6 @@
+
 #+title: Grundlegend Emacs Config
-#+STARTUP: content 
+#+STARTUP: overview 
 #+PROPERTY: header-args:emacs-lisp :tangle "C:/Users/JeremyGeiss/AppData/Roaming/.emacs.d/init.el"
 * Front Matter
     - Path to the config file on GTG laptop:  "C:/Users/JeremyGeiss/AppData/Roaming/.emacs.d/init.el"
@@ -209,6 +210,7 @@
 
 #+end_src
 * Org Mode
+https://orgmode.org/
 ** Org Setup
 #+begin_src emacs-lisp
 
@@ -217,6 +219,16 @@
     (variable-pitch-mode 1)
     (visual-line-mode 1))
 
+#+end_src
+** Auto tangle configuration files: Does NOT Work
+#+begin_src emacs-lisp
+    ;;automatically tangle emacs config file each time it is saved
+    ;;this function is called in Org Package section
+  (defun jkg/org-babel-tangle-config()
+    (when (string-equal (buffer-file-name)
+                        (expand-file-name "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/config.org"))
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
 #+end_src
 ** Org fonts setup
 #+begin_src emacs-lisp
@@ -250,25 +262,28 @@
 #+end_src
 ** Org Package
 #+begin_src emacs-lisp
-(use-package org
-  :hook (org-mode . jkg/org-mode-setup)
-  :config
-  (setq org-ellipsis " ▾"
-	org-hide-emphasis-markers t)
+      (use-package org
+        :hook (org-mode . jkg/org-mode-setup)
+        :config
+        (setq org-ellipsis " ▾"
+              org-hide-emphasis-markers t)
 
-  (setq org-agenda-start-with-log-mode t)
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
+        (setq org-agenda-start-with-log-mode t)
+        (setq org-log-done 'time)
+        (setq org-log-into-drawer t)
 
-  (setq org-agenda-files
-	'("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
-  (setq org-refile-targets
-	'(("archive.org" :maxlevel . 2)
-	  ("tasks.org" :maxlevel . 2)))
-  ;;save org buffers after refiling
-  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+        (setq org-agenda-files
+              '("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
+        (setq org-refile-targets
+              '(("archive.org" :maxlevel . 2)
+                ("tasks.org" :maxlevel . 2)))
+        ;;save org buffers after refiling
+        (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-  (jkg/org-font-setup))
+        (jkg/org-font-setup)
+        ;; this if for the auto-tangle but it does not work
+        (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
+        )
 
 
 
@@ -320,13 +335,48 @@
   (add-to-list 'org-structure-template-alist '("py" . "src python")))
 #+end_src
 ** Org Capture Templates 
-https://orgmode.org/manual/Using-capture.html
-https://orgmode.org/manual/Capture-templates.html
-*** Daily Note
+- https://orgmode.org/manual/Using-capture.html
+- https://orgmode.org/manual/Capture-templates.html
+  
 #+begin_src emacs-lisp
-(setq org-capture-templates
-      '(("t" "Todo" entry (file+headline "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org" "Tasks")
-         "* TODO %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org" "Journal")
-         "* %?\nEntered on %U\n  %i\n  %a")))
+  ;;define the global hot-key
+  (global-set-key (kbd "C-c c") 'org-capture)
+  (setq org-capture-templates
+        '(
+          ;;todo item capture
+          ("t"           ; hotkey
+           "Todo"        ; type
+           entry         ; type
+           (file+headline "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org" "Tasks")
+             "* TODO %?\n  %i\n  %a") ; template
+          ;; inbox item
+          ("i"
+           "Inbox capture"
+           plain
+           (file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/inbox.org")
+           "\n* %U %^{Title}\n %?")
+          ;; journal entry
+          ("j"
+           "Journal"
+           entry
+           (file+datetree "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org")
+           (file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.orgcaptmpl"))
+
+          )
+        )
+
+
 #+end_src
+
+
+**** Journal Capture template
+#+begin_example
+;; **** %U %^{Title}
+        %?
+#+end_example
+ ("j"
+           "Journal"
+           entry
+           (file+datetree "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org")
+           "* %?\n %i\n %%a")
+
