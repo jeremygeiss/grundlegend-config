@@ -1,78 +1,70 @@
+;;Front Matter
+;;Appearance
+(setq inhibit-startup-message t)  ; Duh, Disable the startup message
+(scroll-bar-mode -1)              ; Disable visible scrollbar
+(tool-bar-mode -1)                ; Disable the toolbar
+(tooltip-mode -1)                 ; Disable tooltips
+(set-fringe-mode 10)              ; Give some breathing room
+(menu-bar-mode -1)                ; Disable the menubar
+(setq visible-bell t)             ; set up the visible bell
 
-(setq inhibit-startup-message t)
-
-(scroll-bar-mode -1)         ; Disable visible scrollbar
-(tool-bar-mode -1)            ; Disable the toolbar
-(tooltip-mode -1)              ; Disable tooltips
-(set-fringe-mode 10)         ; Give some breathing room
-
-; (menu-bar-mode -1)         ; Disable the menubar
-
-;;windows fonts
-;; Set the fixed pitch face: for windows: "Consolas" :height 170 
-(set-face-attribute 'default nil :font "Consolas" :height 170)
-(set-face-attribute 'fixed-pitch nil :font "Consolas" :height 170)
-;; Set the variable pitch face: for windows: "Calibri" :height 170 
-(set-face-attribute 'variable-pitch nil :font "Calibri" :height 170 :weight 'regular)
-
-;; manjaro linux fonts
-;;(set-face-attribute 'default nil :font "Noto Mono" :height 140)
-;;(set-face-attribute 'fixed-pitch nil :font "Noto Mono" :height 140)
-;;(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 140 :weight 'regular)
-
-;; set up the visible bell
-(setq visible-bell t)
-
-;; Make ESC quit prompts
+; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-;; Column and line numbers
+; Column and line numbers
 (column-number-mode)
 (global-display-line-numbers-mode t)
 
-;;disable line numbers for some modes (org mode)
+;disable line numbers for some modes (org mode)
 (dolist (mode '(org-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
+;;Fonts
+(set-face-attribute 'default nil :font "Source Code Pro" :height 170)
+(set-face-attribute 'fixed-pitch nil :font "Source Code Pro" :height 170)
+(set-face-attribute 'variable-pitch nil :font "Calibri" :height 170 :weight 'regular)
 
-;; Initialize package sources
+;;Initialize Package Sources
 (require 'package)
 (setq package-archives '(
-			  ("melpa" . "https://melpa.org/packages/")
-                          ("org" . "https://orgmode.org/elpa/")
-                          ("elpa" . "https://elpa.gnu.org/packages/")))
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 (unless package-archive-contents
- (package-refresh-contents))
+  (package-refresh-contents))
 
-;; Initialize use-package on non-Linux platforms
+;;Initialize use-package on non-Linux platforms
 (unless (package-installed-p 'use-package)
    (package-install 'use-package))
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-;; install ivy
+;;Packages
+;;Ivy
 (use-package ivy
   :diminish
-;  :bind (("C-s" . swiper)
-;         :map ivy-minibuffer-map
-;         ("TAB" . ivy-alt-done)	
-;         ("C-l" . ivy-alt-done)
-;         ("C-j" . ivy-next-line)
-;         ("C-k" . ivy-previous-line)
-;         :map ivy-switch-buffer-map
-;         ("C-k" . ivy-previous-line)
-;         ("C-l" . ivy-done)
-;         ("C-d" . ivy-switch-buffer-kill)
-;         :map ivy-reverse-i-search-map
-;         ("C-k" . ivy-previous-line)
-;         ("C-d" . ivy-reverse-i-search-kill))
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)	
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
 
+;;Ivy Rich
 (use-package ivy-rich
   :init
   (ivy-rich-mode 1))
 
+;;Counsel
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
 	 ("C-x b" . counsel-ibuffer)
@@ -82,6 +74,7 @@
   :config
   (setq ivy-initial-inputs-alist nil)) ;; Don't start searches with ^
 
+;;Helpful
 (use-package helpful
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -92,23 +85,16 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 
-;(use-package all-the-icons)
-
-;(use-package doom-modeline
-;  :ensure t
-;  :init (doom-modeline-mode 1)
-;  :custom ((doom-modeline-height 15)))
-
-(use-package doom-themes
-  :init (load-theme 'doom-city-lights t))
-;; doom-city-lights
-;; doom-palenight
-
+;;Rainbow Delimiters
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+;;themes
+(use-package doom-themes
+  :init (load-theme 'doom-city-lights t))
 
-; which-key
-; https://github.com/justbur/emacs-which-key
+;keybindings
+;which-key
+;https://github.com/justbur/emacs-which-key
 (use-package which-key
   :init (which-key-mode)
   :diminish which-key-mode
@@ -135,19 +121,19 @@
     "f"  '(:ignore t :which-key "files")
     "ff" '(counsel-find-file :which-key "find file")
     "fs" '(save-buffer :which-key "save buffer")
-    "fn" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/Notes/")) :which-key "notes")
-    "fc" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/AppData/Roaming/.emacs.d/init.el")) :which-key "init.el")
+    "fn" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/roam/")) :which-key "notes")
+    "fc" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/config.org")) :which-key "config.org")
+    "fi" '((lambda () (interactive) (counsel-find-file "~/.emacs.d/init.el")) :which-key "init.el")
     "w"  '(:ignore t :which-key "window")
     "wv" '(evil-window-vsplit :which-key "vertical split window")
     "wc" '(evil-window-delete :which-key "close window")
     "wn" '(evil-window-new :which-key "new window")
+    "wl" '(evil-window-move-far-right :which-key "move current window right")
+    "a"  '(:ignore t :which-key "app")
+
+    "ac" '(org-capture :which-key "org capture templates")
   ) )
-
-;quit keys, killprompt quit emacs, etc
-;windows and frames
-
-
-
+;;evil-mode
 (use-package evil
   :init
   (setq evil-want-integration t)
@@ -170,13 +156,39 @@
   :config
   (evil-collection-init))
 
+;;org mode
+
+
+(use-package org
+  :hook (org-mode . jkg/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾"
+        org-hide-emphasis-markers t)
+
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+
+  (setq org-agenda-files
+        '("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
+  (setq org-refile-targets
+        '(("archive.org" :maxlevel . 2)
+          ("tasks.org" :maxlevel . 2)))
+  ;;save org buffers after refiling
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+  (jkg/org-font-setup)
+  ;; this if for the auto-tangle but it does not work
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
+  )
+
+;;Org Setup
 (defun jkg/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
   (visual-line-mode 1))
 
-;; Org Mode Configuration ------------------------------------------------------
-
+;;Org Fonts Setup
 (defun jkg/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -203,32 +215,16 @@
   (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
-(use-package org
-  :hook (org-mode . jkg/org-mode-setup)
-  :config
-  (setq org-ellipsis " ▾"
-	org-hide-emphasis-markers t)
 
-  (setq org-agenda-start-with-log-mode t)
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
 
-  (setq org-agenda-files
-	'("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
-  (setq org-refile-targets
-	'(("archive.org" :maxlevel . 2)
-	  ("tasks.org" :maxlevel . 2)))
-  ;;save org buffers after refiling
-  (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
-  (jkg/org-font-setup))
-
+;Org Bullets
 (use-package org-bullets
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+;;Org appearance
 (defun jkg/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
         visual-fill-column-center-text t)
@@ -237,42 +233,67 @@
 (use-package visual-fill-column
   :hook (org-mode . jkg/org-mode-visual-fill))
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python . t)))
+;;Org Babel Languages
+;;add languages for org-babel, not sure if this is required or not
+(with-eval-after-load 'org
+  (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((emacs-lisp . t)
+      (python . t)))
+
+  (push '("conf-unix" . conf-unix) org-src-lang-modes))
+
+;;Org Structure Templates
+;;add some org structure templates for code blocks
+(with-eval-after-load 'org
+  ;; This is needed as of Org 9.2
+  (require 'org-tempo)
+
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python")))
+
+;;Org Capture Templates
+
+;    https://orgmode.org/manual/Using-capture.html
+;    https://orgmode.org/manual/Capture-templates.html
+
+;;define the global hot-key
+(global-set-key (kbd "C-c c") 'org-capture)
+(setq org-capture-templates
+      '(
+        ;;todo item capture
+        ("t"           ; hotkey
+         "Todo"        ; type
+         entry         ; type
+         (file+headline "~/Dropbox/Org/todo.org" "Tasks")
+           "* TODO %?\n  %i\n  %a") ; template
+        ;; inbox item
+        ("i"
+         "Inbox capture"
+         plain
+         (file "~/Dropbox/Org/inbox.org")
+         "\n* %U %^{Title}\n %?")
+        ;; journal entry
+        ("j"
+         "Journal"
+         entry
+         (file+datetree "~/Dropbox/Org/journal.org")
+         (file "~/Dropbox/Org/org-templates/journal.orgcaptmpl"))
+
+        )
+      )
 
 
 
-
-
-
-
-
-
-
-
-
-;;
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-structure-template-alist
-   '(("a" . "export ascii")
-     ("c" . "center")
-     ("C" . "comment")
-     ("e" . "example")
-     ("E" . "export")
-     ("h" . "export html")
-     ("l" . "export latex")
-     ("q" . "quote")
-     ("s" . "src")
-     ("v" . "verse")))
  '(package-selected-packages
-   '(evil-leader evil-collection evil general helpful doom-themes counsel ivy-rich which-key jetbrains-darcula-theme rainbow-delimiters doom-modeline use-package)))
+   '(evil-collection evil general which-key doom-themes rainbow-delimiters helpful counsel ivy-rich ivy use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
