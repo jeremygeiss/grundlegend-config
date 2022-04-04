@@ -1,5 +1,3 @@
-;;Front Matter
-;;Appearance
 (setq inhibit-startup-message t)  ; Duh, Disable the startup message
 (scroll-bar-mode -1)              ; Disable visible scrollbar
 (tool-bar-mode -1)                ; Disable the toolbar
@@ -18,6 +16,8 @@
 ;disable line numbers for some modes (org mode)
 (dolist (mode '(org-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
+;
+
 ;;Fonts
 (set-face-attribute 'default nil :font "Source Code Pro" :height 170)
 (set-face-attribute 'fixed-pitch nil :font "Source Code Pro" :height 170)
@@ -39,7 +39,6 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-;;Packages
 ;;Ivy
 (use-package ivy
   :diminish
@@ -92,48 +91,57 @@
 (use-package doom-themes
   :init (load-theme 'doom-city-lights t))
 
-;keybindings
-;which-key
-;https://github.com/justbur/emacs-which-key
 (use-package which-key
   :init (which-key-mode)
   :diminish which-key-mode
   :config
-  (setq which-key-idle-delay 1))
+  (setq which-key-idle-delay 0.3))
 
 (use-package general
-  :config
-  (general-create-definer jkg/leader-keys
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
+    :config
+    (general-create-definer jkg/leader-keys
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
 
-  (jkg/leader-keys
-    "t"  '(:ignore t :which-key "toggles")
-    "tt" '(counsel-load-theme :which-key "choose theme")
-    "b"  '(:ignore t :which-key "buffer")
-    "be" '(eval-buffer :which-key "eval buffer") 
-    "bN" '(evil-buffer-new :which-key "new buffer")
-    "bn" '(evil-next-buffer :which-key "next buffer")
-    "bp" '(evil-prev-buffer :which-key "prev buffer")
-    "bd" '(kill-current-buffer :which-key "kill current buffer")
-    "bs" '(counsel-switch-buffer :which-key "switch buffer")
-    "f"  '(:ignore t :which-key "files")
-    "ff" '(counsel-find-file :which-key "find file")
-    "fs" '(save-buffer :which-key "save buffer")
-    "fn" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/roam/")) :which-key "notes")
-    "fc" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/config.org")) :which-key "config.org")
-    "fi" '((lambda () (interactive) (counsel-find-file "~/.emacs.d/init.el")) :which-key "init.el")
-    "w"  '(:ignore t :which-key "window")
-    "wv" '(evil-window-vsplit :which-key "vertical split window")
-    "wc" '(evil-window-delete :which-key "close window")
-    "wn" '(evil-window-new :which-key "new window")
-    "wl" '(evil-window-move-far-right :which-key "move current window right")
-    "a"  '(:ignore t :which-key "app")
+    (jkg/leader-keys
+      "t"  '(:ignore t :which-key "Toggles")
+      "tt" '(counsel-load-theme :which-key "choose theme")
+      "tw" '(writeroom-mode :which-key "writeroom mode")
+;;b for buffers
+      "b"  '(:ignore t :which-key "Buffer")
+      "be" '(eval-buffer :which-key "eval buffer") 
+      "bN" '(evil-buffer-new :which-key "new buffer")
+      "bn" '(evil-next-buffer :which-key "next buffer")
+      "bp" '(evil-prev-buffer :which-key "prev buffer")
+      "bd" '(kill-current-buffer :which-key "kill current buffer")
+      "bs" '(counsel-switch-buffer :which-key "switch buffer")
+;;f for files
+      "f"  '(:ignore t :which-key "Files")
+      "ff" '(counsel-find-file :which-key "find file")
+      "fs" '(save-buffer :which-key "save buffer")
+      "fn" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/roam/")) :which-key "notes")
+      "fc" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/config.org")) :which-key "config.org")
+      "fi" '((lambda () (interactive) (counsel-find-file "~/.emacs.d/init.el")) :which-key "init.el")
+;;N for Notes
+      "n"  '(:ignore t :which-key "Notes")
+      "nf" '(org-roam-node-find :which-key "Find Node")
+      "ni" '(org-roam-node-insert :which-key "Insert Node")
+      "nl" '(org-roam-buffer-toggle :which-key "Toggle org-Roam Buffer")
+      "ns" '(org-roam-db-sync :which-key "Org-Roam db Sync")
+;; W for wWindows
+        "w"  '(:ignore t :which-key "Window")
+        "wv" '(evil-window-vsplit :which-key "vertical split window")
+        "wc" '(evil-window-delete :which-key "close window")
+        "wn" '(evil-window-new :which-key "new window")
+        "wl" '(evil-window-move-far-right :which-key "move current window right")
+;; A for applications (or modes or whatever)    
+        "a"  '(:ignore t :which-key "app")
+        "ac" '(org-capture :which-key "org capture templates")
+        "ae" '(insert-esv-passage :which-key "insert esv passage")
+        ))
+                                          ;
 
-    "ac" '(org-capture :which-key "org capture templates")
-  ) )
-;;evil-mode
 (use-package evil
   :init
   (setq evil-want-integration t)
@@ -157,8 +165,6 @@
   (evil-collection-init))
 
 ;;org mode
-
-
 (use-package org
   :hook (org-mode . jkg/org-mode-setup)
   :config
@@ -170,7 +176,7 @@
   (setq org-log-into-drawer t)
 
   (setq org-agenda-files
-        '("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
+        '("~/Dropbox/Org/agenda.org"))
   (setq org-refile-targets
         '(("archive.org" :maxlevel . 2)
           ("tasks.org" :maxlevel . 2)))
@@ -179,7 +185,7 @@
 
   (jkg/org-font-setup)
   ;; this if for the auto-tangle but it does not work
-  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
+ ; (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
   )
 
 ;;Org Setup
@@ -284,19 +290,34 @@
         )
       )
 
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/Dropbox/Org/roam")
+  (org-roam-completion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         :map org-mode-map
+         ("C-M-i"    . completion-at-point))
+  :config
+  (org-roam-setup))
 
+(use-package writeroom-mode)
+(with-eval-after-load 'writeroom-mode
+  (define-key writeroom-mode-map (kbd "C-M-<") #'writeroom-decrease-width)
+  (define-key writeroom-mode-map (kbd "C-M->") #'writeroom-increase-width)
+  (define-key writeroom-mode-map (kbd "C-M-=") #'writeroom-adjust-width))
 
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(evil-collection evil general which-key doom-themes rainbow-delimiters helpful counsel ivy-rich ivy use-package)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;;insert-esv setup
+ (use-package insert-esv
+   :init
+   (setq insert-esv-crossway-api-key "6d222046d13872627d6653c6325934474dfbd46f")
+   (setq insert-esv-include-short-copyright 'true)
+   (setq insert-esv-include-verse-numbers 'true)
+   (setq insert-esv-include-headings 'true)
+   ;;(setq insert-esv-include-passage-horizontal-lines 'false)
+   ;;(setq insert-esv-line-length '50)
+   :bind ("C-x C-e" . insert-esv-passage))
