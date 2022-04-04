@@ -1,103 +1,89 @@
-
 #+title: Grundlegend Emacs Config
 #+STARTUP: overview 
-#+PROPERTY: header-args:emacs-lisp :tangle "C:/Users/JeremyGeiss/AppData/Roaming/.emacs.d/init.el"
-* Front Matter
-    - Path to the config file on GTG laptop:  "C:/Users/JeremyGeiss/AppData/Roaming/.emacs.d/init.el"
-    - Run org-babel-tangle (C-c C-v t) after making changes to this file to tangle init.el again
+#+PROPERTY: header-args:emacs-lisp :tangle "~/.emacs.d/init.el"
 
-* Basic UI Config
+* Front Matter
+    - Path to the config file on GTG laptop:  "~/.emacs.d/init.el"
+    - Run org-babel-tangle (C-c C-v t) after making changes to this file to tangle init.el again
 ** Appearance
 #+begin_src emacs-lisp
-
-  (setq inhibit-startup-message t)  ; Duh, Disable the startup message
-  (scroll-bar-mode -1)              ; Disable visible scrollbar
-  (tool-bar-mode -1)                ; Disable the toolbar
-  (tooltip-mode -1)                 ; Disable tooltips
-  (set-fringe-mode 10)              ; Give some breathing room
-  (menu-bar-mode -1)                ; Disable the menubar
-  (setq visible-bell t)             ; set up the visible bell
-
-  ; Make ESC quit prompts
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-  ; Column and line numbers
-  (column-number-mode)
-  (global-display-line-numbers-mode t)
-
-  ;disable line numbers for some modes (org mode)
-  (dolist (mode '(org-mode-hook))
-    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+(setq inhibit-startup-message t)  ; Duh, Disable the startup message
+(scroll-bar-mode -1)              ; Disable visible scrollbar
+(tool-bar-mode -1)                ; Disable the toolbar
+(tooltip-mode -1)                 ; Disable tooltips
+(set-fringe-mode 10)              ; Give some breathing room
+(menu-bar-mode -1)                ; Disable the menubar
+(setq visible-bell t)             ; set up the visible bell
 #+end_src
+** Global behavior
+#+begin_src emacs-lisp
+; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+; Column and line numbers
+(column-number-mode)
+(global-display-line-numbers-mode t)
+
+;disable line numbers for some modes (org mode)
+(dolist (mode '(org-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+;
+#+end_src
 ** Fonts
-*** Windows Fonts
 #+begin_src emacs-lisp
-    ; Set the fixed pitch face: for windows: "Consolas" :height 170 
-    (set-face-attribute 'default nil :font "Consolas" :height 170)
-    (set-face-attribute 'fixed-pitch nil :font "Consolas" :height 170)
-    ; Set the variable pitch face: for windows: "Calibri" :height 170 
-    (set-face-attribute 'variable-pitch nil :font "Calibri" :height 170 :weight 'regular)
+;;Fonts
+(set-face-attribute 'default nil :font "Source Code Pro" :height 170)
+(set-face-attribute 'fixed-pitch nil :font "Source Code Pro" :height 170)
+(set-face-attribute 'variable-pitch nil :font "Calibri" :height 170 :weight 'regular)
 #+end_src
-*** Linux Fonts
+* Set up Use Package
 #+begin_src emacs-lisp
-    ;(set-face-attribute 'default nil :font "Noto Mono" :height 140)
-    ;(set-face-attribute 'fixed-pitch nil :font "Noto Mono" :height 140)
-    ;(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 140 :weight 'regular)
-#+end_src
-* Package Sources
-** Initialize Package Sources
-#+begin_src emacs-lisp
-  (require 'package)
-  (setq package-archives '(
-                           ("melpa" . "https://melpa.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")
-                           ("elpa" . "https://elpa.gnu.org/packages/")))
-  (package-initialize)
-  (unless package-archive-contents
-   (package-refresh-contents))
+;;Initialize Package Sources
+(require 'package)
+(setq package-archives '(
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
 
+;;Initialize use-package on non-Linux platforms
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
+(require 'use-package)
+(setq use-package-always-ensure t)
 #+end_src
-** Initialize use-package on non-Linux platforms
+* Packages 
+** Ivy and Ivy Rich
 #+begin_src emacs-lisp
-  (unless (package-installed-p 'use-package)
-     (package-install 'use-package))
-  (require 'use-package)
-  (setq use-package-always-ensure t)
-#+end_src
-* Packages
-** Ivy
-#+begin_src emacs-lisp
+;;Ivy
 (use-package ivy
   :diminish
-;  :bind (("C-s" . swiper)
-;         :map ivy-minibuffer-map
-;         ("TAB" . ivy-alt-done)	
-;         ("C-l" . ivy-alt-done)
-;         ("C-j" . ivy-next-line)
-;         ("C-k" . ivy-previous-line)
-;         :map ivy-switch-buffer-map
-;         ("C-k" . ivy-previous-line)
-;         ("C-l" . ivy-done)
-;         ("C-d" . ivy-switch-buffer-kill)
-;         :map ivy-reverse-i-search-map
-;         ("C-k" . ivy-previous-line)
-;         ("C-d" . ivy-reverse-i-search-kill))
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)	
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
 
-#+end_src
-** Ivy Rich
-#+begin_src emacs-lisp
-
+;;Ivy Rich
 (use-package ivy-rich
   :init
   (ivy-rich-mode 1))
-
 #+end_src
-
-** Counsel
+** Counsel 
 #+begin_src emacs-lisp
+;;Counsel
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
 	 ("C-x b" . counsel-ibuffer)
@@ -107,7 +93,9 @@
   :config
   (setq ivy-initial-inputs-alist nil)) ;; Don't start searches with ^
 #+end_src
+** Helpful
 #+begin_src emacs-lisp
+;;Helpful
 (use-package helpful
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -119,28 +107,25 @@
   ([remap describe-key] . helpful-key))
 #+end_src
 ** Rainbow Delimiters
-- highlights delimiters such as parentheses, brackets or braces according to their depth
 #+begin_src emacs-lisp
+;;Rainbow Delimiters
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
-#+end_src
-** themes
-#+begin_src emacs-lisp
+;;themes
 (use-package doom-themes
   :init (load-theme 'doom-city-lights t))
 #+end_src
-** Keybindings 
-*** Which Key: Description of Keybindings
+* Keybindings
+** Which-key
+- https://github.com/justbur/emacs-which-key
 #+begin_src emacs-lisp
-;which-key
-;https://github.com/justbur/emacs-which-key
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 1))
+  (use-package which-key
+    :init (which-key-mode)
+    :diminish which-key-mode
+    :config
+    (setq which-key-idle-delay 0.3))
 #+end_src
-*** General: Custom Keybindings leveraging which-key
+** General
 #+begin_src emacs-lisp
   (use-package general
     :config
@@ -150,39 +135,47 @@
       :global-prefix "C-SPC")
 
     (jkg/leader-keys
-      "t"  '(:ignore t :which-key "toggles")
+      "t"  '(:ignore t :which-key "Toggles")
       "tt" '(counsel-load-theme :which-key "choose theme")
-      "b"  '(:ignore t :which-key "buffer")
+      "tw" '(writeroom-mode :which-key "writeroom mode")
+;;b for buffers
+      "b"  '(:ignore t :which-key "Buffer")
       "be" '(eval-buffer :which-key "eval buffer") 
       "bN" '(evil-buffer-new :which-key "new buffer")
       "bn" '(evil-next-buffer :which-key "next buffer")
       "bp" '(evil-prev-buffer :which-key "prev buffer")
       "bd" '(kill-current-buffer :which-key "kill current buffer")
       "bs" '(counsel-switch-buffer :which-key "switch buffer")
-      "f"  '(:ignore t :which-key "files")
+;;f for files
+      "f"  '(:ignore t :which-key "Files")
       "ff" '(counsel-find-file :which-key "find file")
       "fs" '(save-buffer :which-key "save buffer")
-      "fn" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/Notes/")) :which-key "notes")
-      "fc" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/config.org")) :which-key "config.org")
-
-      "w"  '(:ignore t :which-key "window")
-      "wv" '(evil-window-vsplit :which-key "vertical split window")
-      "wc" '(evil-window-delete :which-key "close window")
-      "wn" '(evil-window-new :which-key "new window")
-      "wl" '(evil-window-move-far-right :which-key "move current window right")
-      "a"  '(:ignore t :which-key "app")
-
-      "ac" '(org-capture :which-key "org capture templates")
-    ) )
-
-  ;quit keys, killprompt quit emacs, etc
-  ;windows and frames
-
-
+      "fn" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/roam/")) :which-key "notes")
+      "fc" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/config.org")) :which-key "config.org")
+      "fi" '((lambda () (interactive) (counsel-find-file "~/.emacs.d/init.el")) :which-key "init.el")
+;;N for Notes
+      "n"  '(:ignore t :which-key "Notes")
+      "nf" '(org-roam-node-find :which-key "Find Node")
+      "ni" '(org-roam-node-insert :which-key "Insert Node")
+      "nl" '(org-roam-buffer-toggle :which-key "Toggle org-Roam Buffer")
+      "ns" '(org-roam-db-sync :which-key "Org-Roam db Sync")
+;; W for wWindows
+        "w"  '(:ignore t :which-key "Window")
+        "wv" '(evil-window-vsplit :which-key "vertical split window")
+        "wc" '(evil-window-delete :which-key "close window")
+        "wn" '(evil-window-new :which-key "new window")
+        "wl" '(evil-window-move-far-right :which-key "move current window right")
+;; A for applications (or modes or whatever)    
+        "a"  '(:ignore t :which-key "app")
+        "ac" '(org-capture :which-key "org capture templates")
+        "ae" '(insert-esv-passage :which-key "insert esv passage")
+        ))
+                                          ;
 #+end_src
-
-      "fc" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/AppData/Roaming/.emacs.d/init.el")) :which-key "init.el")
 ** Evil Mode
+- https://github.com/noctuid/evil-guide
+- https://nathantypanski.com/blog/2014-08-03-a-vim-like-emacs-config.html
+
 #+begin_src emacs-lisp
 (use-package evil
   :init
@@ -205,33 +198,40 @@
   :after evil
   :config
   (evil-collection-init))
-
-
-
 #+end_src
 * Org Mode
-https://orgmode.org/
-** Org Setup
 #+begin_src emacs-lisp
+;;org mode
+(use-package org
+  :hook (org-mode . jkg/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾"
+        org-hide-emphasis-markers t)
 
-  (defun jkg/org-mode-setup ()
-    (org-indent-mode)
-    (variable-pitch-mode 1)
-    (visual-line-mode 1))
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
 
-#+end_src
-** Auto tangle configuration files: Does NOT Work
-#+begin_src emacs-lisp
-    ;;automatically tangle emacs config file each time it is saved
-    ;;this function is called in Org Package section
-  (defun jkg/org-babel-tangle-config()
-    (when (string-equal (buffer-file-name)
-                        (expand-file-name "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/config.org"))
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
-#+end_src
-** Org fonts setup
-#+begin_src emacs-lisp
+  (setq org-agenda-files
+        '("~/Dropbox/Org/agenda.org"))
+  (setq org-refile-targets
+        '(("archive.org" :maxlevel . 2)
+          ("tasks.org" :maxlevel . 2)))
+  ;;save org buffers after refiling
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+  (jkg/org-font-setup)
+  ;; this if for the auto-tangle but it does not work
+ ; (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
+  )
+
+;;Org Setup
+(defun jkg/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (visual-line-mode 1))
+
+;;Org Fonts Setup
 (defun jkg/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -259,47 +259,15 @@ https://orgmode.org/
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
 
-#+end_src
-** Org Package
-#+begin_src emacs-lisp
-      (use-package org
-        :hook (org-mode . jkg/org-mode-setup)
-        :config
-        (setq org-ellipsis " ▾"
-              org-hide-emphasis-markers t)
 
-        (setq org-agenda-start-with-log-mode t)
-        (setq org-log-done 'time)
-        (setq org-log-into-drawer t)
-
-        (setq org-agenda-files
-              '("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
-        (setq org-refile-targets
-              '(("archive.org" :maxlevel . 2)
-                ("tasks.org" :maxlevel . 2)))
-        ;;save org buffers after refiling
-        (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
-        (jkg/org-font-setup)
-        ;; this if for the auto-tangle but it does not work
-        (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
-        )
-
-
-
-#+end_src
-** Org Bullets
-
-#+begin_src emacs-lisp
+;Org Bullets
 (use-package org-bullets
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-#+end_src
-** Org appearance
-#+begin_src emacs-lisp
+;;Org appearance
 (defun jkg/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
         visual-fill-column-center-text t)
@@ -308,10 +276,7 @@ https://orgmode.org/
 (use-package visual-fill-column
   :hook (org-mode . jkg/org-mode-visual-fill))
 
-#+end_src
-** Org Babel Languages
-#+begin_src emacs-lisp
-
+;;Org Babel Languages
 ;;add languages for org-babel, not sure if this is required or not
 (with-eval-after-load 'org
   (org-babel-do-load-languages
@@ -321,10 +286,7 @@ https://orgmode.org/
 
   (push '("conf-unix" . conf-unix) org-src-lang-modes))
 
-#+end_src
-** Org Structure templates
-#+begin_src emacs-lisp
-
+;;Org Structure Templates
 ;;add some org structure templates for code blocks
 (with-eval-after-load 'org
   ;; This is needed as of Org 9.2
@@ -333,50 +295,84 @@ https://orgmode.org/
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("py" . "src python")))
-#+end_src
-** Org Capture Templates 
-- https://orgmode.org/manual/Using-capture.html
-- https://orgmode.org/manual/Capture-templates.html
-  
-#+begin_src emacs-lisp
-  ;;define the global hot-key
-  (global-set-key (kbd "C-c c") 'org-capture)
-  (setq org-capture-templates
-        '(
-          ;;todo item capture
-          ("t"           ; hotkey
-           "Todo"        ; type
-           entry         ; type
-           (file+headline "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org" "Tasks")
-             "* TODO %?\n  %i\n  %a") ; template
-          ;; inbox item
-          ("i"
-           "Inbox capture"
-           plain
-           (file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/inbox.org")
-           "\n* %U %^{Title}\n %?")
-          ;; journal entry
-          ("j"
-           "Journal"
-           entry
-           (file+datetree "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org")
-           (file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.orgcaptmpl"))
 
-          )
+;;Org Capture Templates
+
+;    https://orgmode.org/manual/Using-capture.html
+;    https://orgmode.org/manual/Capture-templates.html
+
+;;define the global hot-key
+(global-set-key (kbd "C-c c") 'org-capture)
+(setq org-capture-templates
+      '(
+        ;;todo item capture
+        ("t"           ; hotkey
+         "Todo"        ; type
+         entry         ; type
+         (file+headline "~/Dropbox/Org/todo.org" "Tasks")
+           "* TODO %?\n  %i\n  %a") ; template
+        ;; inbox item
+        ("i"
+         "Inbox capture"
+         plain
+         (file "~/Dropbox/Org/inbox.org")
+         "\n* %U %^{Title}\n %?")
+        ;; journal entry
+        ("j"
+         "Journal"
+         entry
+         (file+datetree "~/Dropbox/Org/journal.org")
+         (file "~/Dropbox/Org/org-templates/journal.orgcaptmpl"))
+
         )
+      )
 
 
 #+end_src
-
-
-**** Journal Capture template
-#+begin_example
-;; **** %U %^{Title}
-        %?
-#+end_example
- ("j"
-           "Journal"
-           entry
-           (file+datetree "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org")
-           "* %?\n %i\n %%a")
-
+* Org Roam
+- https://systemcrafters.cc/build-a-second-brain-in-emacs/getting-started-with-org-roam/
+#+begin_src emacs-lisp
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/Dropbox/Org/roam")
+  (org-roam-completion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         :map org-mode-map
+         ("C-M-i"    . completion-at-point))
+  :config
+  (org-roam-setup))
+#+end_src
+* Writeroom Mode 
+- https://github.com/joostkremers/writeroom-mode
+#+begin_src emacs-lisp
+  (use-package writeroom-mode)
+  (with-eval-after-load 'writeroom-mode
+    (define-key writeroom-mode-map (kbd "C-M-<") #'writeroom-decrease-width)
+    (define-key writeroom-mode-map (kbd "C-M->") #'writeroom-increase-width)
+    (define-key writeroom-mode-map (kbd "C-M-=") #'writeroom-adjust-width))
+#+end_src
+* ESV Insert Passage
+#+begin_src emacs-lisp
+ ;;insert-esv setup
+  (use-package insert-esv
+    :init
+    (setq insert-esv-crossway-api-key "6d222046d13872627d6653c6325934474dfbd46f")
+    (setq insert-esv-include-short-copyright 'true)
+    (setq insert-esv-include-verse-numbers 'true)
+    (setq insert-esv-include-headings 'true)
+    ;;(setq insert-esv-include-passage-horizontal-lines 'false)
+    ;;(setq insert-esv-line-length '50)
+    :bind ("C-x C-e" . insert-esv-passage))
+#+end_src
+* Flyspell - need to setup
+** Mouse 3 remap to two finger tap for Macbook
+  ;;flyspell remap mouse 3 to two fingers tap on macbook
+  (eval-after-load "flyspell"
+    '(progn
+       (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+       (define-key flyspell-mouse-map [mouse-3] #'undefined)))
