@@ -137,6 +137,17 @@
     ;;(setq insert-esv-line-length '50)
     :bind ("C-x C-e" . insert-esv-passage))
 #+end_src
+** Deft
+- https://jblevins.org/projects/deft/
+#+begin_src emacs-lisp
+    (use-package deft
+      :bind ("C-c n d" . deft)
+      :commands (deft)
+      :config (setq deft-directory "~/Dropbox/Org/roam"
+                    deft-recursive t
+                    deft-use-filename-as-title t
+                    deft-extensions '("md" "org")))
+#+end_src
 * Keybindings
 ** Which-key
 - https://github.com/justbur/emacs-which-key
@@ -171,12 +182,15 @@
   ;;f for files
         "f"  '(:ignore t :which-key "Files")
         "ff" '(counsel-find-file :which-key "find file")
+        "fj" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/journal.org")) :which-key "journal")
         "fs" '(save-buffer :which-key "save buffer")
         "fn" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/roam/")) :which-key "notes")
         "fc" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/config.org")) :which-key "config.org")
         "fi" '((lambda () (interactive) (counsel-find-file "~/.emacs.d/init.el")) :which-key "init.el")
   ;;N for Notes
         "n"  '(:ignore t :which-key "Notes")
+        "nc" '(org-id-get-create :which-key "insert node at point")
+        "nd" '(deft :which-key "deft")
         "nf" '(org-roam-node-find :which-key "Find Node")
         "ni" '(org-roam-node-insert :which-key "Insert Node")
         "nl" '(org-roam-buffer-toggle :which-key "Toggle org-Roam Buffer")
