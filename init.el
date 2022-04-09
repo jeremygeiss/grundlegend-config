@@ -91,6 +91,31 @@
 (use-package doom-themes
   :init (load-theme 'doom-city-lights t))
 
+(use-package writeroom-mode)
+(with-eval-after-load 'writeroom-mode
+  (define-key writeroom-mode-map (kbd "C-M-<") #'writeroom-decrease-width)
+  (define-key writeroom-mode-map (kbd "C-M->") #'writeroom-increase-width)
+  (define-key writeroom-mode-map (kbd "C-M-=") #'writeroom-adjust-width))
+
+;;insert-esv setup
+ (use-package insert-esv
+   :init
+   (setq insert-esv-crossway-api-key "6d222046d13872627d6653c6325934474dfbd46f")
+   (setq insert-esv-include-short-copyright 'true)
+   (setq insert-esv-include-verse-numbers 'true)
+   (setq insert-esv-include-headings 'true)
+   ;;(setq insert-esv-include-passage-horizontal-lines 'false)
+   ;;(setq insert-esv-line-length '50)
+   :bind ("C-x C-e" . insert-esv-passage))
+
+(use-package deft
+  :bind ("C-c n d" . deft)
+  :commands (deft)
+  :config (setq deft-directory "~/Dropbox/Org/roam"
+                deft-recursive t
+                deft-use-filename-as-title t
+                deft-extensions '("md" "org")))
+
 (use-package which-key
   :init (which-key-mode)
   :diminish which-key-mode
@@ -119,28 +144,30 @@
 ;;f for files
       "f"  '(:ignore t :which-key "Files")
       "ff" '(counsel-find-file :which-key "find file")
+      "fj" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/journal.org")) :which-key "journal")
       "fs" '(save-buffer :which-key "save buffer")
       "fn" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/roam/")) :which-key "notes")
       "fc" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/config.org")) :which-key "config.org")
       "fi" '((lambda () (interactive) (counsel-find-file "~/.emacs.d/init.el")) :which-key "init.el")
 ;;N for Notes
       "n"  '(:ignore t :which-key "Notes")
+      "nc" '(org-id-get-create :which-key "insert node at point")
+      "nd" '(deft :which-key "deft")
       "nf" '(org-roam-node-find :which-key "Find Node")
       "ni" '(org-roam-node-insert :which-key "Insert Node")
       "nl" '(org-roam-buffer-toggle :which-key "Toggle org-Roam Buffer")
       "ns" '(org-roam-db-sync :which-key "Org-Roam db Sync")
 ;; W for wWindows
-        "w"  '(:ignore t :which-key "Window")
-        "wv" '(evil-window-vsplit :which-key "vertical split window")
-        "wc" '(evil-window-delete :which-key "close window")
-        "wn" '(evil-window-new :which-key "new window")
-        "wl" '(evil-window-move-far-right :which-key "move current window right")
+      "w"  '(:ignore t :which-key "Window")
+      "wv" '(evil-window-vsplit :which-key "vertical split window")
+      "wc" '(evil-window-delete :which-key "close window")
+      "wn" '(evil-window-new :which-key "new window")
+      "wl" '(evil-window-move-far-right :which-key "move current window right")
 ;; A for applications (or modes or whatever)    
-        "a"  '(:ignore t :which-key "app")
-        "ac" '(org-capture :which-key "org capture templates")
-        "ae" '(insert-esv-passage :which-key "insert esv passage")
-        ))
-                                          ;
+      "a"  '(:ignore t :which-key "app")
+      "ac" '(org-capture :which-key "org capture templates")
+      "ae" '(insert-esv-passage :which-key "insert esv passage")
+      ))
 
 (use-package evil
   :init
@@ -179,7 +206,7 @@
         '("~/Dropbox/Org/agenda.org"))
   (setq org-refile-targets
         '(("archive.org" :maxlevel . 2)
-          ("tasks.org" :maxlevel . 2)))
+          ("todo.org" :maxlevel . 2)))
   ;;save org buffers after refiling
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
@@ -304,20 +331,3 @@
          ("C-M-i"    . completion-at-point))
   :config
   (org-roam-setup))
-
-(use-package writeroom-mode)
-(with-eval-after-load 'writeroom-mode
-  (define-key writeroom-mode-map (kbd "C-M-<") #'writeroom-decrease-width)
-  (define-key writeroom-mode-map (kbd "C-M->") #'writeroom-increase-width)
-  (define-key writeroom-mode-map (kbd "C-M-=") #'writeroom-adjust-width))
-
-;;insert-esv setup
- (use-package insert-esv
-   :init
-   (setq insert-esv-crossway-api-key "6d222046d13872627d6653c6325934474dfbd46f")
-   (setq insert-esv-include-short-copyright 'true)
-   (setq insert-esv-include-verse-numbers 'true)
-   (setq insert-esv-include-headings 'true)
-   ;;(setq insert-esv-include-passage-horizontal-lines 'false)
-   ;;(setq insert-esv-line-length '50)
-   :bind ("C-x C-e" . insert-esv-passage))
