@@ -1,0 +1,45 @@
+:PROPERTIES:
+:ID:       c08dd81c-9657-4236-a185-efd8b0302b6a
+:END:
+
+#+title: EMACS tricks
+* Insert contents of file into the current buffer C-x i [select file]
+* Org Babel
+** Code Blocks
+*** Structure templates for adding blocks
+**** C-c C-,  select [s] to create a source code block
+#+begin_src python :results output
+print("Hello!")
+#+end_src
+#+RESULTS:
+: Hello!
+**** to insert a code block for emacs lisp type <el + tab
+
+***** Org Structure templates
+#+begin_src emacs-lisp
+
+;;add some org structure templates for code blocks
+(with-eval-after-load 'org
+  ;; This is needed as of Org 9.2
+  (require 'org-tempo)
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python")))
+#+end_src
+**** the function is: org-babel-execute-src-block
+**** another keybinding is: C-c C-c to evaluate the code block
+* features to add
+** spell checker
+** DONE org babel and literate config file
+** org agenda
+** DONE org journal (used capture template for journal.org
+** DONE deft and or roam (will installing SQL give me trouble?)
+CLOSED: [2022-05-05 Thu 12:22]
+*** org-roam-dailies
+** org export to word files and PDF
+* Inline comments: @@comment this is a comment@@
+- inline comments begin with @@comment and end with @@
+- its going to be fun playing @@comment: probably too muh fun because I can't make decisions@@ with fonts.
+* Org Roam https://www.orgroam.com/manual.html
+** add a new node to and existing file: (org-id-get-create)
+** org-roam tutorial: https://github.com/nobiot/Zero-to-Emacs-and-Org-roam/blob/main/30.setup-org-roam.md
