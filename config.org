@@ -187,6 +187,7 @@
         "fn" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/roam/")) :which-key "notes")
         "fc" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/config.org")) :which-key "config.org")
         "fi" '((lambda () (interactive) (counsel-find-file "~/.emacs.d/init.el")) :which-key "init.el")
+        "ft" '((lambda () (interactive) (counsel-find-file "~/Dropbox/Org/todo.org")) :which-key "todo")
   ;;N for Notes
         "n"  '(:ignore t :which-key "Notes")
         "nc" '(org-id-get-create :which-key "insert node at point")
