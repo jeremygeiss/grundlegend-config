@@ -142,41 +142,49 @@
 #+end_src
 *** General: Custom Keybindings leveraging which-key
 #+begin_src emacs-lisp
-  (use-package general
-    :config
-    (general-create-definer jkg/leader-keys
-      :keymaps '(normal insert visual emacs)
-      :prefix "SPC"
-      :global-prefix "C-SPC")
+    (use-package general
+      :config
+      (general-create-definer jkg/leader-keys
+        :keymaps '(normal insert visual emacs)
+        :prefix "SPC"
+        :global-prefix "C-SPC")
 
-    (jkg/leader-keys
-      "t"  '(:ignore t :which-key "toggles")
-      "tt" '(counsel-load-theme :which-key "choose theme")
-      "b"  '(:ignore t :which-key "buffer")
-      "be" '(eval-buffer :which-key "eval buffer") 
-      "bN" '(evil-buffer-new :which-key "new buffer")
-      "bn" '(evil-next-buffer :which-key "next buffer")
-      "bp" '(evil-prev-buffer :which-key "prev buffer")
-      "bd" '(kill-current-buffer :which-key "kill current buffer")
-      "bs" '(counsel-switch-buffer :which-key "switch buffer")
-      "f"  '(:ignore t :which-key "files")
-      "ff" '(counsel-find-file :which-key "find file")
-      "fs" '(save-buffer :which-key "save buffer")
-      "fn" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/Notes/")) :which-key "notes")
-      "fc" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/config.org")) :which-key "config.org")
+      (jkg/leader-keys
+        "t"  '(:ignore t :which-key "toggles")
+        "tt" '(counsel-load-theme :which-key "choose theme")
+        "b"  '(:ignore t :which-key "buffer")
+        "be" '(eval-buffer :which-key "eval buffer") 
+        "bN" '(evil-buffer-new :which-key "new buffer")
+        "bn" '(evil-next-buffer :which-key "next buffer")
+        "bp" '(evil-prev-buffer :which-key "prev buffer")
+        "bd" '(kill-current-buffer :which-key "kill current buffer")
+        "bs" '(counsel-switch-buffer :which-key "switch buffer")
+        "f"  '(:ignore t :which-key "files")
+        "ff" '(counsel-find-file :which-key "find file")
+        "fs" '(save-buffer :which-key "save buffer")
+        "fn" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/Notes/")) :which-key "notes")
+        "fc" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/config.org")) :which-key "config.org")
+        "fj" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org")) :which-key "journal.org")
+  ;;N for Notes
+        "n"  '(:ignore t :which-key "Notes")
+        "nc" '(org-id-get-create :which-key "insert node at point")
+        "nf" '(org-roam-node-find :which-key "Find Node")
+        "ni" '(org-roam-node-insert :which-key "Insert Node")
+        "nl" '(org-roam-buffer-toggle :which-key "Toggle org-Roam Buffer")
+        "ns" '(org-roam-db-sync :which-key "Org-Roam db Sync")
+      ;;W for Windows
+        "w"  '(:ignore t :which-key "window")
+        "wv" '(evil-window-vsplit :which-key "vertical split window")
+        "wc" '(evil-window-delete :which-key "close window")
+        "wn" '(evil-window-new :which-key "new window")
+        "wl" '(evil-window-move-far-right :which-key "move current window right")
+        "a"  '(:ignore t :which-key "app")
 
-      "w"  '(:ignore t :which-key "window")
-      "wv" '(evil-window-vsplit :which-key "vertical split window")
-      "wc" '(evil-window-delete :which-key "close window")
-      "wn" '(evil-window-new :which-key "new window")
-      "wl" '(evil-window-move-far-right :which-key "move current window right")
-      "a"  '(:ignore t :which-key "app")
+        "ac" '(org-capture :which-key "org capture templates")
+      ) )
 
-      "ac" '(org-capture :which-key "org capture templates")
-    ) )
-
-  ;quit keys, killprompt quit emacs, etc
-  ;windows and frames
+    ;quit keys, killprompt quit emacs, etc
+    ;windows and frames
 
 
 #+end_src
@@ -262,28 +270,28 @@ https://orgmode.org/
 #+end_src
 ** Org Package
 #+begin_src emacs-lisp
-      (use-package org
-        :hook (org-mode . jkg/org-mode-setup)
-        :config
-        (setq org-ellipsis " ▾"
-              org-hide-emphasis-markers t)
+  (use-package org
+    :hook (org-mode . jkg/org-mode-setup)
+    :config
+    (setq org-ellipsis " ▾"
+          org-hide-emphasis-markers t)
 
-        (setq org-agenda-start-with-log-mode t)
-        (setq org-log-done 'time)
-        (setq org-log-into-drawer t)
+    (setq org-agenda-start-with-log-mode t)
+    (setq org-log-done 'time)
+    (setq org-log-into-drawer t)
+    (setq org-directory "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org")
+    (setq org-agenda-files
+          '("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
+    (setq org-refile-targets
+          '(("archive.org" :maxlevel . 2)
+            ("tasks.org" :maxlevel . 2)))
+    ;;save org buffers after refiling
+    (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-        (setq org-agenda-files
-              '("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
-        (setq org-refile-targets
-              '(("archive.org" :maxlevel . 2)
-                ("tasks.org" :maxlevel . 2)))
-        ;;save org buffers after refiling
-        (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
-        (jkg/org-font-setup)
-        ;; this if for the auto-tangle but it does not work
-        (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
-        )
+    (jkg/org-font-setup)
+    ;; this if for the auto-tangle but it does not work
+    (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
+    )
 
 
 
@@ -380,3 +388,33 @@ https://orgmode.org/
            (file+datetree "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org")
            "* %?\n %i\n %%a")
 
+           
+** Org Export
+***  export to Latex and PDF
+#+begin_src emacs-lisp
+(require 'ox-latex)
+(unless (boundp 'org-latex-classes)
+  (setq org-latex-classes nil))
+(add-to-list 'org-latex-classes
+             '("article"
+               "\\documentclass{article}"
+               ("\\section{%s}" . "\\section*{%s}")))
+#+end_src
+** Org Roam
+- https://systemcrafters.cc/build-a-second-brain-in-emacs/getting-started-with-org-roam/
+#+begin_src emacs-lisp
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/Notes")
+  (org-roam-completion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         :map org-mode-map
+         ("C-M-i"    . completion-at-point))
+  :config
+  (org-roam-setup))
+#+end_src
