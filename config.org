@@ -163,8 +163,12 @@
         "ff" '(counsel-find-file :which-key "find file")
         "fs" '(save-buffer :which-key "save buffer")
         "fn" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/Notes/")) :which-key "notes")
-        "fc" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/config.org")) :which-key "config.org")
-        "fj" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org")) :which-key "journal.org")
+        "fo" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/")) :which-key "org files")
+        "fc" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/config.org")) :which-key "config")
+        "fj" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org")) :which-key "journal")
+      "fi" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/AppData/Roaming/.emacs.d/init.el")) :which-key "init.el")
+        "ft" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org")) :which-key "tasks")
+        "fa" '((lambda () (interactive) (counsel-find-file "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/archive.org")) :which-key "archive")
   ;;N for Notes
         "n"  '(:ignore t :which-key "Notes")
         "nc" '(org-id-get-create :which-key "insert node at point")
@@ -180,7 +184,9 @@
         "wl" '(evil-window-move-far-right :which-key "move current window right")
         "a"  '(:ignore t :which-key "app")
 
+        "aa" '(org-agenda :which-key "agenda")
         "ac" '(org-capture :which-key "org capture templates")
+        "ar" '(org-refile :which-key "org refile")
       ) )
 
     ;quit keys, killprompt quit emacs, etc
@@ -270,28 +276,29 @@ https://orgmode.org/
 #+end_src
 ** Org Package
 #+begin_src emacs-lisp
-  (use-package org
-    :hook (org-mode . jkg/org-mode-setup)
-    :config
-    (setq org-ellipsis " ▾"
-          org-hide-emphasis-markers t)
+    (use-package org
+      :hook (org-mode . jkg/org-mode-setup)
+      :config
+      (setq org-ellipsis " ▾"
+            org-hide-emphasis-markers t)
 
-    (setq org-agenda-start-with-log-mode t)
-    (setq org-log-done 'time)
-    (setq org-log-into-drawer t)
-    (setq org-directory "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org")
-    (setq org-agenda-files
-          '("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"))
-    (setq org-refile-targets
-          '(("archive.org" :maxlevel . 2)
-            ("tasks.org" :maxlevel . 2)))
-    ;;save org buffers after refiling
-    (advice-add 'org-refile :after 'org-save-all-org-buffers)
+      (setq org-agenda-start-with-log-mode t)
+      (setq org-log-done 'time)
+      (setq org-log-into-drawer t)
+      (setq org-directory "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org")
+      (setq org-agenda-files
+            '("C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/tasks.org"
+              "C:/Users/JeremyGeiss/OneDrive - Genuine Technology Group, Inc/org/journal.org"))
+      (setq org-refile-targets
+            '(("archive.org" :maxlevel . 2)
+              ("tasks.org" :maxlevel . 2)))
+      ;;save org buffers after refiling
+      (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-    (jkg/org-font-setup)
-    ;; this if for the auto-tangle but it does not work
-    (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
-    )
+      (jkg/org-font-setup)
+      ;; this if for the auto-tangle but it does not work
+      (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'jkg/org-babel-tangle-config)))
+      )
 
 
 
