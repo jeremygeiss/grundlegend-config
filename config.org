@@ -351,44 +351,70 @@
 ** Org Capture Templates
 #+begin_src emacs-lisp
 
-  ;;Org Capture Templates
+      ;;Org Capture Templates
 
-  ;    https://orgmode.org/manual/Using-capture.html
-  ;    https://orgmode.org/manual/Capture-templates.html
+      ;    https://orgmode.org/manual/Using-capture.html
+      ;    https://orgmode.org/manual/Capture-templates.html
 
-  ;;define the global hot-key
-  (global-set-key (kbd "C-c c") 'org-capture)
-  (setq org-capture-templates
-        '(
-          ;;todo item capture
-          ("t"           ; hotkey
-           "Todo"        ; type
-           entry         ; type
-           (file+headline "~/Dropbox/Org/todo.org" "Tasks")
-             "* TODO %?\n  %i\n  %a") ; template
-          ;; inbox item
-          ("i"
-           "Inbox capture"
-           plain
-           (file "~/Dropbox/Org/inbox.org")
-           "\n* %U %^{Title}\n %?")
-          ;; journal entry
-          ("j"
-           "Journal"
-           entry
-           (file+datetree "~/Dropbox/Org/journal.org")
-           (file "~/Dropbox/Org/org-templates/journal.orgcaptmpl"))
-          ;; reading notes
-          ("r" ;hotkey
-           "Reading Note" ;type
-           plain ;type
-           (file "~/Dropbox/Org/roam/reading-notes.org")
+      ;;define the global hot-key
+      (global-set-key (kbd "C-c c") 'org-capture)
+  ;;org-refile function to enable filing a reading note in under author and book title
+  (defun org-ask-location ()
+    (let* ((org-refile-targets '((nil :maxlevel . 9)))
+           (hd (condition-case nil
+                   (car (org-refile-get-location "Headline" nil t))
+                 (error (car org-refile-history)))))
+      (goto-char (point-min))
+      (outline-next-heading)
+      (if (re-search-forward
+           (format org-complex-heading-regexp-format (regexp-quote hd))
+           nil t)
+          (goto-char (point-at-bol))
+        (goto-char (point-max))
+        (or (bolp) (insert "\n"))
+        (insert "\n* " hd "\n")))
+      (end-of-line))
 
-           "\n- Pg. %^{Page or Location #}: %?"
-           ;(file "~/Dropbox/Org/org-templates/reading.orgcaptmpl")
-           )
-          )
-        )
+
+
+
+
+      (setq org-capture-templates
+            '(
+              ;;bible reading notes
+              ("b"
+               "Bible Note"
+               entry
+               (file+datetree "~/Dropbox/Org/roam/bible/bible-journal.org")
+               (file "~/Dropbox/Org/org-templates/journal.orgcaptmpl"))
+              ;; inbox item
+              ("i"
+               "Inbox capture"
+               plain
+               (file "~/Dropbox/Org/inbox.org")
+               "\n* %U %^{Title}\n %?")
+              ;; journal entry
+              ("j"
+               "Journal"
+               entry
+               (file+datetree "~/Dropbox/Org/journal.org")
+               (file "~/Dropbox/Org/org-templates/journal.orgcaptmpl"))
+              ;; reading notes
+              ("r" ;hotkey
+               "Reading Note" ;type
+               plain ;type
+               (file+function "~/Dropbox/Org/roam/reading-notes.org"
+                              org-ask-location) ;;function
+               "\n*** Pg. %^{Page or Location #}: %?") ;template
+                            ;(file "~/Dropbox/Org/org-templates/reading.orgcaptmpl")
+              ;;todo item capture
+              ("t"           ; hotkey
+               "Todo"        ; type
+               entry         ; type
+               (file+headline "~/Dropbox/Org/todo.org" "Tasks")
+                 "* TODO %?\n  %i\n  %a") ; template
+              )
+            )
 
 
 #+end_src
